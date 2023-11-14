@@ -38,7 +38,7 @@ function ConversationPage() {
         setError(error.toString());
         setLoading(false);
       });
-  }, [conversationId, messages]);
+  }, [conversationId]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
