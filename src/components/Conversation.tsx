@@ -2,12 +2,15 @@
 import Link from 'next/link';
 import React, { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { useAuth } from '../components/AuthContext';
+import LogoutButton from './LoggoutButton';
 
 type ConversationType = {
   id: number;
   firstMessage: string;
 };
 function Conversation() {
+  const { isLoggedIn } = useAuth();
   const router = useRouter();
   const [conversations, setConversations] = useState<ConversationType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,9 +55,15 @@ function Conversation() {
 
         <div className="flex-1"></div>
         <div className="p-4">
-          <a href="/auth/login">Login</a>
-          <span className="mx-2">/</span>
-          <a href="/auth/signup">Signup</a>
+          {isLoggedIn ? (
+            <LogoutButton />
+          ) : (
+            <>
+              <a href="/auth/login">Login</a>
+              <span className="mx-2">/</span>
+              <a href="/auth/signup">Signup</a>
+            </>
+          )}
         </div>
       </nav>
     </div>
