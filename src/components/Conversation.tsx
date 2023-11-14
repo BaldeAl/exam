@@ -15,9 +15,23 @@ function Conversation() {
   const [conversations, setConversations] = useState<ConversationType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [shouldFetch, setShouldFetch] = useState(true);
   useEffect(() => {
-    fetch('http://localhost:3000/api/conversations')
+    if (!shouldFetch) {
+      setLoading(false);
+      return;
+    }
+    const token = localStorage.getItem('token');
+    const headers: any = {
+      'Content-Type': 'application/json',
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    fetch('http://localhost:3000/api/conversations', {
+      method: 'GET',
+      headers: headers,
+    })
       .then((res) => res.json())
       .then((data) => {
         setConversations(data);
@@ -27,7 +41,8 @@ function Conversation() {
         setError(error);
         setLoading(false);
       });
-  }, []);
+  }, [shouldFetch]);
+
   return (
     <div className="flex text-gray-800 dark:text-gray-200">
       <nav className="flex flex-col bg-gray-100 dark:bg-gray-900 w-[260px] overflow-y-auto">

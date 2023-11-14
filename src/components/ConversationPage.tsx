@@ -18,17 +18,27 @@ function ConversationPage() {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [shouldFetch, setShouldFetch] = useState(true);
   const [conversationId, setConversationId] = useState<number | undefined>(
     typeof id === 'string' ? parseInt(id, 10) : undefined
   );
 
   useEffect(() => {
-    if (!conversationId) {
+    if (!shouldFetch || !conversationId) {
       setLoading(false);
       return;
     }
-
-    fetch(`http://localhost:3000/api/conversations/${conversationId}`)
+    const token = localStorage.getItem('token');
+    const headers: any = {
+      'Content-Type': 'application/json',
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    fetch(`http://localhost:3000/api/conversations/${conversationId}`, {
+      method: 'GET',
+      headers: headers,
+    })
       .then((res) => res.json())
       .then((data) => {
         setMessages(data.messages);
@@ -38,16 +48,23 @@ function ConversationPage() {
         setError(error.toString());
         setLoading(false);
       });
-  }, [conversationId]);
+  }, [conversationId, shouldFetch]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="">
-      {messages.map((message) => (
-        <Message key={message.id} role={message.role} text={message.content} />
-      ))}
+      <div className="flex-1 overflow-y-auto">
+        {messages.map((message) => (
+          <Message
+            key={message.id}
+            role={message.role}
+            text={message.content}
+          />
+        ))}
+      </div>
+
       <div>
         <Form initialConversationId={conversationId} />
       </div>

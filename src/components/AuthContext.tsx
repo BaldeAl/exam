@@ -4,26 +4,29 @@ interface AuthContextType {
   login: (token: string) => void;
   logout: () => void;
 }
+type AuthProviderProps = {
+  children: React.ReactNode;
+};
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('token');
     if (token) {
       setIsLoggedIn(true);
     }
   }, []);
 
   const login = (token: string) => {
-    localStorage.setItem('authToken', token);
+    localStorage.setItem('token', token);
     setIsLoggedIn(true);
   };
 
   const logout = () => {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('token');
     setIsLoggedIn(false);
   };
 

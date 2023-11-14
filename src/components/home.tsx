@@ -12,7 +12,8 @@ function HomePage() {
   return (
     <div className="">
       <>
-        <div className="">
+        <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto"></div>
           <Form onNewConversation={handleNewConversation} />
         </div>
       </>

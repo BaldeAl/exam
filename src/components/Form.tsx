@@ -25,9 +25,18 @@ function Form({ initialConversationId, onNewConversation }: FormProps) {
     }
 
     try {
+      const token = localStorage.getItem('token');
+
+      const headers: any = {
+        'Content-Type': 'application/json',
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: headers,
+
         body: JSON.stringify({ content: message }),
       });
       const data = await response.json();
